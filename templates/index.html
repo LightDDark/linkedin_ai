@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LinkedIn AI Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>LinkedIn AI Scraper</h1>
+
+        <form method="POST">
+            <label for="api_key">OpenAI API Key:</label>
+            <input type="password" id="api_key" name="api_key" required>
+
+            <label for="keywords-input">Keywords:</label>
+            <input type="text" id="keywords-input" placeholder="Enter keywords (press Enter to add)">
+            <div id="keywords-container" class="keywords-container"></div>
+            <div id="error-message" class="error-message">
+                You can only enter up to 10 keywords.
+            </div>
+
+            <label for="job_levels">Select Job Levels:</label>
+            <select name="job_levels" id="job_levels" multiple>
+                <option value="Internship">Internship</option>
+                <option value="Entry level" selected>Entry level</option>
+                <option value="Mid-Senior level">Mid-Senior level</option>
+                <option value="Director">Director</option>
+                <option value="Executive">Executive</option>
+            </select>
+
+            <label for="description">Search Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+
+            <button type="submit">Search Jobs</button>
+        </form>
+
+        {% if results %}
+            <button id="dwn_b" class="download-btn">Download CSV</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td>{{ result.Title }}</td>
+                    <td>{{ result.Company }}</td>
+                    <td>{{ result.Location }}</td>
+                    <td><a href="{{ result.Href }}" target="_blank">View Job</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <script>
+        var resultsData = {{ results | tojson | safe }};
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
